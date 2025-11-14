@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакты - {{ developer.name }}{% endblock %}
+{% load static %}
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+{% block content %}
+<!-- Contact Header -->
+<section class="bg-primary text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5">Свяжитесь со мной</h1>
+                <p class="lead">Готов обсудить новые проекты и возможности сотрудничества</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Contact Information -->
+            <div class="col-lg-5 mb-5 mb-lg-0">
+                <div class="contact-info">
+                    <h2 class="h3 mb-4">Контактная информация</h2>
+                    
+                    <div class="contact-item d-flex align-items-start mb-4">
+                        <div class="contact-icon me-3 mt-1">
+                            <i class="fas fa-user fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Имя</h5>
+                            <p class="text-muted mb-0">{{ developer.name }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-start mb-4">
+                        <div class="contact-icon me-3 mt-1">
+                            <i class="fas fa-briefcase fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Должность</h5>
+                            <p class="text-muted mb-0">{{ developer.title }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-start mb-4">
+                        <div class="contact-icon me-3 mt-1">
+                            <i class="fas fa-envelope fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Email</h5>
+                            <a href="mailto:{{ developer.email }}" class="text-muted text-decoration-none">
+                                {{ developer.email }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-start mb-4">
+                        <div class="contact-icon me-3 mt-1">
+                            <i class="fab fa-telegram fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Telegram</h5>
+                            <a href="https://t.me/{{ developer.telegram }}" class="text-muted text-decoration-none" target="_blank">
+                                @{{ developer.telegram }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-start mb-4">
+                        <div class="contact-icon me-3 mt-1">
+                            <i class="fab fa-github fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">GitHub</h5>
+                            <a href="{{ developer.github_url }}" class="text-muted text-decoration-none" target="_blank">
+                                {{ developer.github_url }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h5 class="mb-3">Время ответа</h5>
+                        <div class="response-time">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Обычно отвечаю в течение:</span>
+                                <strong>2-4 часов</strong>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: 90%"></div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">В рабочее время (9:00 - 18:00 по МСК)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="col-lg-7">
+                <div class="contact-form">
+                    <h2 class="h3 mb-4">Напишите мне</h2>
+                    <p class="text-muted mb-4">Заполните форму ниже, и я свяжусь с вами в ближайшее время</p>
+                    
+                    <form id="contactForm" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Ваше имя *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                                <div class="invalid-feedback">Пожалуйста, введите ваше имя</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="invalid-feedback">Пожалуйста, введите корректный email</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Тема сообщения *</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                            <div class="invalid-feedback">Пожалуйста, введите тему сообщения</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="project_type" class="form-label">Тип проекта</label>
+                            <select class="form-select" id="project_type" name="project_type">
+                                <option value="" selected>Выберите тип проекта</option>
+                                <option value="web">Веб-разработка</option>
+                                <option value="api">API разработка</option>
+                                <option value="database">Базы данных</option>
+                                <option value="devops">DevOps</option>
+                                <option value="consultation">Консультация</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="budget" class="form-label">Бюджет проекта</label>
+                            <select class="form-select" id="budget" name="budget">
+                                <option value="" selected>Выберите бюджет</option>
+                                <option value="small">До 50,000 руб.</option>
+                                <option value="medium">50,000 - 200,000 руб.</option>
+                                <option value="large">200,000 - 500,000 руб.</option>
+                                <option value="enterprise">Свыше 500,000 руб.</option>
+                                <option value="discuss">Требует обсуждения</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Сообщение *</label>
+                            <textarea class="form-control" id="message" name="message" rows="6" required placeholder="Опишите ваш проект, задачи и требования..."></textarea>
+                            <div class="invalid-feedback">Пожалуйста, напишите ваше сообщение</div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="privacy" name="privacy" required>
+                            <label class="form-check-label" for="privacy">
+                                Я соглашаюсь с обработкой персональных данных
+                            </label>
+                            <div class="invalid-feedback">Необходимо ваше согласие</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Отправить сообщение
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Success Message (hidden by default) -->
+                    <div id="successMessage" class="alert alert-success mt-4 d-none" role="alert">
+                        <h4 class="alert-heading">Сообщение отправлено!</h4>
+                        <p class="mb-0">Спасибо за ваше сообщение. Я свяжусь с вами в ближайшее время.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="text-center mb-5">Часто задаваемые вопросы</h2>
+                
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                Какие технологии вы используете в работе?
+                            </button>
+                        </h3>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Основные технологии: Python, Django, Golang, PostgreSQL, Docker. 
+                                Полный список технологий можно посмотреть в разделе <a href="{% url 'index' %}#skills">Навыки</a>.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                Какой у вас опыт работы?
+                            </button>
+                        </h3>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Подробный опыт работы с описанием проектов и технологий доступен в разделе 
+                                <a href="{% url 'index' %}#experience">Опыт работы</a> на главной странице.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Вы работаете удаленно?
+                            </button>
+                        </h3>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Да, я работаю удаленно и имею опыт успешной работы в распределенных командах. 
+                                Готов рассмотреть как удаленные, так и гибридные форматы сотрудничества.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Как скоро можно начать работу?
+                            </button>
+                        </h3>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Обычно я могу начать работу в течение 1-2 недель после обсуждения всех деталей проекта. 
+                                Для срочных проектов возможен более быстрый старт.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    const successMessage = document.getElementById('successMessage');
+    
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Simple form validation
+        if (!contactForm.checkValidity()) {
+            e.stopPropagation();
+            contactForm.classList.add('was-validated');
+            return;
+        }
+        
+        // Simulate form submission
+        const formData = new FormData(contactForm);
+        
+        // Here you would typically send the data to your backend
+        // For now, we'll just show the success message
+        setTimeout(() => {
+            contactForm.classList.remove('was-validated');
+            contactForm.reset();
+            successMessage.classList.remove('d-none');
+            
+            // Scroll to success message
+            successMessage.scrollIntoView({ behavior: 'smooth' });
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.add('d-none');
+            }, 5000);
+        }, 1000);
+    });
+});
+</script>
+
+<style>
+.contact-icon {
+    min-width: 40px;
+}
+
+.contact-item:hover .contact-icon {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+.response-time .progress {
+    border-radius: 4px;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+
+/* Custom form styling */
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+</style>
+{% endblock %}
