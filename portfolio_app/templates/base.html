@@ -3,213 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ personal_info.name }} - Разработчик{% endblock %}</title>
+    <title>{% block title %}Nodis | Чистые цифровые решения{% endblock %}</title>
+    
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <!-- Base Styles -->
     <style>
         :root {
-            --text-primary: #1a1a1a;
-            --text-secondary: #4a5568;
-            --text-muted: #718096;
-            --border-color: #e2e8f0;
-            --primary-color: #2563eb;
+            /* Простая цветовая палитра */
+            --color-primary: #2563eb;
+            --color-primary-dark: #1d4ed8;
+            --color-secondary: #64748b;
+            --color-light: #f8fafc;
+            --color-white: #ffffff;
+            --color-border: #e2e8f0;
+            --color-text: #1e293b;
+            --color-text-light: #64748b;
+            
+            /* Отступы */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+        }
+        
+        /* Базовые стили */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            font-size: 16px;
         }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.7;
-            color: var(--text-primary);
-            font-size: 16px;
-            font-weight: 400;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.5;
+            color: var(--color-text);
+            background-color: var(--color-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
-        /* Typography Scale */
-        h1, .h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
-        h2, .h2 { font-size: 1.875rem; font-weight: 600; line-height: 1.3; }
-        h3, .h3 { font-size: 1.5rem; font-weight: 600; line-height: 1.4; }
-        h4, .h4 { font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
-        h5, .h5 { font-size: 1.125rem; font-weight: 600; line-height: 1.5; }
-        h6, .h6 { font-size: 1rem; font-weight: 600; line-height: 1.5; }
-        
-        .lead {
-            font-size: 1.125rem;
-            font-weight: 400;
-            line-height: 1.7;
-            color: var(--text-secondary);
+        main {
+            flex: 1;
         }
         
-        .text-muted {
-            color: var(--text-muted) !important;
+        /* Типографика */
+        h1, h2, h3 {
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-sm);
         }
         
-        /* Spacing */
-        .content-section {
-            padding: 3rem 0;
+        h1 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
         }
         
-        @media (max-width: 768px) {
-            .content-section {
-                padding: 2rem 0;
-            }
-            
-            h1, .h1 { font-size: 1.875rem; }
-            h2, .h2 { font-size: 1.5rem; }
-            h3, .h3 { font-size: 1.25rem; }
+        h2 {
+            font-size: clamp(1.75rem, 3vw, 2rem);
         }
         
-        /* Cards */
-        .card {
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        h3 {
+            font-size: clamp(1.25rem, 2vw, 1.5rem);
         }
         
-        .card-body {
-            padding: 1.5rem;
+        p {
+            font-size: 1rem;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text-light);
         }
         
-        /* Navigation */
+        /* Навигация */
+        .navbar {
+            background: var(--color-white);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-sm) 0;
+        }
+        
         .navbar-brand {
-            font-weight: 700;
-            font-size: 1.25rem;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: var(--color-text) !important;
         }
         
         .nav-link {
             font-weight: 500;
-            color: var(--text-secondary) !important;
+            color: var(--color-text-light) !important;
             padding: 0.5rem 1rem !important;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
         
-        .nav-link:hover {
-            color: var(--primary-color) !important;
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--color-primary) !important;
+            background-color: rgba(37, 99, 235, 0.05);
         }
         
-        /* Skills */
-        .skill-bar {
-            width: 100px;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .skill-progress {
-            height: 100%;
-            background: var(--primary-color);
-            border-radius: 3px;
-        }
-        
-        /* Badges */
-        .badge {
-            font-weight: 500;
-            font-size: 0.75rem;
-            padding: 0.375rem 0.75rem;
-        }
-        
-        /* Lists */
-        .list-group-item {
+        /* Кнопки */
+        .btn-primary {
+            background-color: var(--color-primary);
             border: none;
-            padding: 0.75rem 1rem;
-            color: var(--text-primary);
-        }
-        
-        .list-group-item:hover {
-            background-color: #f8fafc;
-        }
-        
-        /* Code blocks */
-        pre, code {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-        
-        /* Links */
-        a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        a:hover {
-            color: #1d4ed8;
-            text-decoration: underline;
-        }
-        
-        /* Buttons */
-        .btn {
+            color: white;
             font-weight: 500;
             border-radius: 8px;
-            padding: 0.625rem 1.25rem;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease;
         }
         
-        /* Text content */
-        .text-content {
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+        
+        /* Карточки */
+        .card {
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            background: var(--color-white);
+            transition: all 0.2s ease;
+            height: 100%;
+            padding: var(--spacing-md);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Сетки */
+        .container-fluid {
+            padding-left: var(--spacing-md);
+            padding-right: var(--spacing-md);
+        }
+        
+        @media (min-width: 768px) {
+            .container-fluid {
+                padding-left: var(--spacing-lg);
+                padding-right: var(--spacing-lg);
+            }
+        }
+        
+        /* Секции */
+        .section {
+            padding: var(--spacing-xl) 0;
+        }
+        
+        .section-sm {
+            padding: var(--spacing-lg) 0;
+        }
+        
+        /* Футер */
+        .footer {
+            background: var(--color-light);
+            border-top: 1px solid var(--color-border);
+            padding: var(--spacing-lg) 0;
+            margin-top: auto;
+        }
+        
+        .footer-link {
+            color: var(--color-text-light);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--color-primary);
+        }
+        
+        /* Бейджи */
+        .badge {
+            background-color: var(--color-light);
+            color: var(--color-text);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid var(--color-border);
+        }
+        
+        /* Формы */
+        .form-control {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
             font-size: 1rem;
-            line-height: 1.8;
-            color: var(--text-primary);
+            transition: all 0.2s ease;
         }
         
-        .text-content p {
-            margin-bottom: 1.25rem;
+        .form-control:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
         }
         
-        .text-content ul, .text-content ol {
-            padding-left: 1.5rem;
-            margin-bottom: 1.25rem;
+        /* Мобильная навигация */
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            background: var(--color-light);
         }
         
-        .text-content li {
-            margin-bottom: 0.5rem;
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding-left: var(--spacing-sm);
+                padding-right: var(--spacing-sm);
+            }
+            
+            .section {
+                padding: var(--spacing-lg) 0;
+            }
+            
+            .card {
+                padding: var(--spacing-sm);
+            }
         }
         
-        /* Table */
-        .table {
-            color: var(--text-primary);
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
         }
         
-        .table td {
-            padding: 1rem 0.75rem;
-            vertical-align: top;
-            border-color: var(--border-color);
+        /* Утилиты */
+        .rounded {
+            border-radius: 12px;
+        }
+        
+        .shadow-sm {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
         }
     </style>
+    
+    {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-white bg-white border-bottom">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                {{ personal_info.name|default:"Portfolio" }}
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Главная</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'project_list' %}">Проекты</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Обо мне</a></li>
-                    
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+<body>
+    <!-- Навигация -->
+    {% include 'includes/navigation.html' %}
+    
+    <!-- Контент -->
     <main>
         {% block content %}{% endblock %}
     </main>
-
-    <footer class="bg-dark text-white py-5 mt-5">
-        <div class="container text-center">
-            <p class="mb-0 text-muted">&copy; 2024 {{ personal_info.name|default:"Portfolio" }}</p>
-        </div>
-    </footer>
-
+    
+    <!-- Футер -->
+    {% include 'includes/footer.html' %}
+    
+    <!-- Скрипты -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Базовые скрипты -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Закрытие мобильного меню при клике на ссылку
+            const navLinks = document.querySelectorAll('.nav-link');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                        if (bsCollapse) {
+                            bsCollapse.hide();
+                        }
+                    }
+                });
+            });
+            
+            // Ленивая загрузка изображений
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.loading = 'lazy';
+                if (!img.alt) {
+                    img.alt = '';
+                }
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

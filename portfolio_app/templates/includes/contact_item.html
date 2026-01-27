@@ -1,0 +1,17 @@
+<div class="contact-item mb-4">
+    <div class="d-flex align-items-start">
+        <div class="project-icon me-3" style="width: 50px; height: 50px; background: var(--color-birch);">
+            <i class="{{ icon }}" style="color: var(--color-moss);"></i>
+        </div>
+        <div>
+            <h5 class="mb-1">{{ label }}</h5>
+            {% if link %}
+            <a href="{{ link }}" {% if target %}target="{{ target }}"{% endif %} class="text-decoration-none">
+                <span class="text-gradient">{{ value }}</span>
+            </a>
+            {% else %}
+            <p class="text-muted mb-0">{{ value }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

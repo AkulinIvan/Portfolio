@@ -1,0 +1,638 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    const successMessage = document.getElementById('successMessage');
+    const privacyCheckbox = document.getElementById('privacy');
+    
+    if (!contactForm) return;
+    
+    // Загрузка состояния формы из localStorage
+    loadFormState();
+    
+    // Сохранение состояния формы при изменении
+    contactForm.addEventListener('input', saveFormState);
+    
+    // Обработка отправки формы
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Валидация формы
+        if (!validateForm()) {
+            showValidationErrors();
+            return;
+        }
+        
+        // Получение данных формы
+        const formData = getFormData();
+        
+        // Показ состояния загрузки
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalBtnContent = submitBtn.innerHTML;
+        showLoadingState(submitBtn);
+        
+        try {
+            // Отправка данных (симуляция в демо-режиме)
+            const response = await submitForm(formData);
+            
+            // Обработка успешной отправки
+            handleSuccess(response);
+            
+            // Очистка сохраненного состояния
+            clearFormState();
+            
+        } catch (error) {
+            // Обработка ошибки
+            handleError(error);
+        } finally {
+            // Восстановление кнопки
+            restoreButtonState(submitBtn, originalBtnContent);
+        }
+    });
+    
+    // Валидация в реальном времени
+    setupRealTimeValidation();
+    
+    // Анимация полей формы
+    setupFormAnimations();
+    
+    // Функция валидации формы
+    function validateForm() {
+        let isValid = true;
+        
+        // Проверка обязательных полей
+        const requiredFields = contactForm.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                highlightField(field, false);
+            } else {
+                highlightField(field, true);
+            }
+            
+            // Специальная валидация для email
+            if (field.type === 'email' && field.value.trim()) {
+                if (!isValidEmail(field.value)) {
+                    isValid = false;
+                    highlightField(field, false);
+                    showFieldError(field, 'Пожалуйста, введите корректный email');
+                }
+            }
+        });
+        
+        // Проверка согласия с политикой
+        if (privacyCheckbox && !privacyCheckbox.checked) {
+            isValid = false;
+            highlightField(privacyCheckbox, false);
+            showFieldError(privacyCheckbox, 'Необходимо ваше согласие');
+        }
+        
+        return isValid;
+    }
+    
+    // Валидация email
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+    
+    // Подсветка поля
+    function highlightField(field, isValid) {
+        field.classList.remove(isValid ? 'is-invalid' : 'is-valid');
+        field.classList.add(isValid ? 'is-valid' : 'is-invalid');
+    }
+    
+    // Показать ошибку поля
+    function showFieldError(field, message) {
+        let feedback = field.nextElementSibling;
+        
+        if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+            feedback = document.createElement('div');
+            feedback.className = 'invalid-feedback';
+            field.parentNode.insertBefore(feedback, field.nextSibling);
+        }
+        
+        feedback.textContent = message;
+        feedback.style.display = 'block';
+    }
+    
+    // Скрыть ошибку поля
+    function hideFieldError(field) {
+        const feedback = field.nextElementSibling;
+        if (feedback && feedback.classList.contains('invalid-feedback')) {
+            feedback.style.display = 'none';
+        }
+    }
+    
+    // Показать все ошибки валидации
+    function showValidationErrors() {
+        contactForm.classList.add('was-validated');
+        
+        // Прокрутка к первой ошибке
+        const firstError = contactForm.querySelector('.is-invalid');
+        if (firstError) {
+            firstError.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            firstError.focus();
+        }
+    }
+    
+    // Получение данных формы
+    function getFormData() {
+        const formData = new FormData(contactForm);
+        const data = {};
+        
+        for (let [key, value] of formData.entries()) {
+            data[key] = value;
+        }
+        
+        // Добавляем дополнительную информацию
+        data.timestamp = new Date().toISOString();
+        data.userAgent = navigator.userAgent;
+        data.referrer = document.referrer;
+        
+        return data;
+    }
+    
+    // Отправка формы (симуляция)
+    async function submitForm(data) {
+        console.log('Отправка формы:', data);
+        
+        // В реальном проекте здесь будет fetch запрос:
+        // const response = await fetch('/api/contact/', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'X-CSRFToken': getCookie('csrftoken')
+        //     },
+        //     body: JSON.stringify(data)
+        // });
+        // 
+        // if (!response.ok) {
+        //     throw new Error('Ошибка отправки формы');
+        // }
+        // 
+        // return await response.json();
+        
+        // Демо-режим: симуляция отправки
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                // 90% успешных отправок для демонстрации
+                if (Math.random() > 0.1) {
+                    resolve({
+                        success: true,
+                        message: 'Сообщение успешно отправлено',
+                        timestamp: new Date().toISOString()
+                    });
+                } else {
+                    reject(new Error('Ошибка при отправке сообщения. Пожалуйста, попробуйте ещё раз.'));
+                }
+            }, 1500);
+        });
+    }
+    
+    // Обработка успешной отправки
+    function handleSuccess(response) {
+        // Сброс формы
+        contactForm.reset();
+        contactForm.classList.remove('was-validated');
+        
+        // Показ сообщения об успехе
+        showSuccessMessage();
+        
+        // Логирование в консоль
+        console.log('Форма успешно отправлена:', response);
+        
+        // Аналитика (если подключена)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'contact_form_submit', {
+                'event_category': 'Contact',
+                'event_label': 'Success'
+            });
+        }
+        
+        // Можно добавить отправку в CRM или другие системы
+        // sendToCRM(response);
+    }
+    
+    // Обработка ошибки
+    function handleError(error) {
+        console.error('Ошибка отправки формы:', error);
+        
+        // Показ сообщения об ошибке
+        showErrorMessage(error.message || 'Произошла ошибка при отправке');
+        
+        // Аналитика (если подключена)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'contact_form_error', {
+                'event_category': 'Contact',
+                'event_label': 'Error'
+            });
+        }
+    }
+    
+    // Показать состояние загрузки
+    function showLoadingState(button) {
+        button.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Отправка...
+        `;
+        button.disabled = true;
+        
+        // Анимация для всей формы
+        contactForm.style.opacity = '0.7';
+        contactForm.style.pointerEvents = 'none';
+    }
+    
+    // Восстановить состояние кнопки
+    function restoreButtonState(button, originalContent) {
+        button.innerHTML = originalContent;
+        button.disabled = false;
+        
+        // Восстановление формы
+        contactForm.style.opacity = '';
+        contactForm.style.pointerEvents = '';
+    }
+    
+    // Показать сообщение об успехе
+    function showSuccessMessage() {
+        if (!successMessage) return;
+        
+        // Анимация появления
+        successMessage.classList.remove('d-none');
+        successMessage.style.opacity = '0';
+        successMessage.style.transform = 'translateY(-20px)';
+        
+        requestAnimationFrame(() => {
+            successMessage.style.transition = 'all 0.5s ease';
+            successMessage.style.opacity = '1';
+            successMessage.style.transform = 'translateY(0)';
+        });
+        
+        // Автоматическое скрытие через 5 секунд
+        setTimeout(() => {
+            successMessage.style.opacity = '0';
+            successMessage.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                successMessage.classList.add('d-none');
+                successMessage.style = '';
+            }, 500);
+        }, 5000);
+        
+        // Прокрутка к сообщению
+        successMessage.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest' 
+        });
+    }
+    
+    // Показать сообщение об ошибке
+    function showErrorMessage(message) {
+        // Создаём или находим контейнер для ошибок
+        let errorContainer = contactForm.querySelector('.error-container');
+        
+        if (!errorContainer) {
+            errorContainer = document.createElement('div');
+            errorContainer.className = 'error-container';
+            contactForm.insertBefore(errorContainer, contactForm.firstChild);
+        }
+        
+        // Создаём сообщение об ошибке
+        const errorAlert = document.createElement('div');
+        errorAlert.className = 'alert alert-danger alert-dismissible fade show';
+        errorAlert.innerHTML = `
+            <strong>Ошибка!</strong> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Добавляем анимацию
+        errorAlert.style.opacity = '0';
+        errorContainer.appendChild(errorAlert);
+        
+        requestAnimationFrame(() => {
+            errorAlert.style.transition = 'opacity 0.3s ease';
+            errorAlert.style.opacity = '1';
+        });
+        
+        // Автоматическое скрытие через 7 секунд
+        setTimeout(() => {
+            if (errorAlert.parentNode) {
+                errorAlert.style.opacity = '0';
+                setTimeout(() => {
+                    if (errorAlert.parentNode) {
+                        errorAlert.remove();
+                    }
+                }, 300);
+            }
+        }, 7000);
+        
+        // Прокрутка к ошибке
+        errorAlert.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
+    }
+    
+    // Сохранение состояния формы
+    function saveFormState() {
+        const formData = {};
+        
+        // Сохраняем значения всех полей
+        const inputs = contactForm.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            if (input.name) {
+                formData[input.name] = input.type === 'checkbox' ? input.checked : input.value;
+            }
+        });
+        
+        // Сохраняем в localStorage
+        try {
+            localStorage.setItem('contactFormDraft', JSON.stringify(formData));
+        } catch (e) {
+            console.warn('Не удалось сохранить состояние формы:', e);
+        }
+    }
+    
+    // Загрузка состояния формы
+    function loadFormState() {
+        try {
+            const savedData = localStorage.getItem('contactFormDraft');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                
+                // Восстанавливаем значения полей
+                Object.keys(formData).forEach(key => {
+                    const input = contactForm.querySelector(`[name="${key}"]`);
+                    if (input) {
+                        if (input.type === 'checkbox') {
+                            input.checked = formData[key];
+                        } else {
+                            input.value = formData[key];
+                        }
+                        
+                        // Триггерим событие изменения для валидации
+                        input.dispatchEvent(new Event('input'));
+                    }
+                });
+                
+                console.log('Состояние формы восстановлено');
+            }
+        } catch (e) {
+            console.warn('Не удалось загрузить состояние формы:', e);
+        }
+    }
+    
+    // Очистка сохраненного состояния
+    function clearFormState() {
+        try {
+            localStorage.removeItem('contactFormDraft');
+        } catch (e) {
+            console.warn('Не удалось очистить состояние формы:', e);
+        }
+    }
+    
+    // Настройка валидации в реальном времени
+    function setupRealTimeValidation() {
+        const inputs = contactForm.querySelectorAll('input, textarea');
+        
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim()) {
+                    // Валидация email
+                    if (this.type === 'email' && !isValidEmail(this.value)) {
+                        highlightField(this, false);
+                        showFieldError(this, 'Пожалуйста, введите корректный email');
+                    } else {
+                        highlightField(this, true);
+                        hideFieldError(this);
+                    }
+                }
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    hideFieldError(this);
+                    this.classList.remove('is-invalid', 'is-valid');
+                }
+            });
+        });
+    }
+    
+    // Настройка анимаций формы
+    function setupFormAnimations() {
+        const inputs = contactForm.querySelectorAll('.form-control, .form-select');
+        
+        inputs.forEach(input => {
+            // Анимация фокуса
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+            
+            // Эффект при наведении
+            input.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.transition = 'transform 0.2s ease';
+            });
+            
+            input.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+        
+        // Анимация для кнопки отправки
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.02)';
+                this.style.boxShadow = '0 8px 20px rgba(28, 69, 57, 0.3)';
+            });
+            
+            submitBtn.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        }
+    }
+    
+    // Вспомогательная функция для получения CSRF токена
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Очистка формы при закрытии страницы (опционально)
+    window.addEventListener('beforeunload', function(e) {
+        // Можно спросить пользователя, хочет ли он сохранить черновик
+        // const formData = getFormData();
+        // const hasData = Object.values(formData).some(value => 
+        //     value && value !== '' && value !== false
+        // );
+        // 
+        // if (hasData) {
+        //     e.preventDefault();
+        //     e.returnValue = 'У вас есть несохраненные данные в форме. Вы уверены, что хотите уйти?';
+        // }
+    });
+});
+</script>
+
+<style>
+    /* Стили для формы обратной связи */
+    .contact-form .form-control,
+    .contact-form .form-select {
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        background-color: white;
+    }
+    
+    .contact-form .form-control:focus,
+    .contact-form .form-select:focus {
+        border-color: var(--color-lichen);
+        box-shadow: 0 0 0 0.25rem rgba(125, 163, 145, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    .contact-form .form-control.is-valid,
+    .contact-form .form-select.is-valid {
+        border-color: var(--color-moss);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%233a6656' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    }
+    
+    .contact-form .form-control.is-invalid,
+    .contact-form .form-select.is-invalid {
+        border-color: var(--color-ember);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23d95d41'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23d95d41' stroke='none'/%3e%3c/svg%3e");
+    }
+    
+    .contact-form .form-label {
+        font-weight: 500;
+        color: var(--color-pine-green);
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .contact-form .form-check-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    .contact-form .form-check-input {
+        border: 2px solid var(--border-color);
+    }
+    
+    .contact-form .form-check-input:checked {
+        background-color: var(--color-moss);
+        border-color: var(--color-moss);
+    }
+    
+    .contact-form .form-check-input:focus {
+        border-color: var(--color-lichen);
+        box-shadow: 0 0 0 0.25rem rgba(125, 163, 145, 0.25);
+    }
+    
+    .contact-form .form-check-input.is-invalid {
+        border-color: var(--color-ember);
+    }
+    
+    .contact-form .invalid-feedback {
+        color: var(--color-ember);
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+    
+    .contact-form .valid-feedback {
+        color: var(--color-moss);
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+    
+    /* Анимация для лейблов */
+    .contact-form .form-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-form .form-group.focused .form-label {
+        color: var(--color-lichen);
+        transform: translateY(-5px);
+        font-size: 0.85rem;
+    }
+    
+    /* Стили для алертов */
+    .contact-form .alert {
+        border-radius: 10px;
+        border: none;
+        margin-bottom: 1.5rem;
+        animation: slideIn 0.5s ease;
+    }
+    
+    .contact-form .alert-success {
+        background: linear-gradient(135deg, var(--color-birch), #d4edda);
+        color: var(--color-pine-green);
+        border-left: 4px solid var(--color-moss);
+    }
+    
+    .contact-form .alert-danger {
+        background: linear-gradient(135deg, #f8d7da, var(--color-birch));
+        color: var(--color-ember);
+        border-left: 4px solid var(--color-ember);
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .contact-form .form-control,
+        .contact-form .form-select {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.95rem;
+        }
+        
+        .contact-form .btn-lg {
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+        }
+    }
+    
+    /* Анимация для спиннера */
+    .spinner-border {
+        color: var(--color-moss);
+    }
+    
+    /* Эффект для обязательных полей */
+    .contact-form .required::after {
+        content: " *";
+        color: var(--color-ember);
+    }
+</style>

@@ -1,62 +1,169 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Разработка API и бэкенд-сервисов{% endblock %}
+
+{% block meta_description %}{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="content-section bg-white">
+<!-- Hero секция -->
+<div class="section-py bg-white">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="mb-4">{{ personal_info.name }}</h1>
-                <p class="lead mb-4">{{ personal_info.title }}</p>
-                <p class="text-content mb-4">
-                    Backend Developer (Golang/Python) с опытом разработки высоконагруженных систем. 
-                    Специализируюсь на создании масштабируемых микросервисных архитектур.
-                </p>
-                <div class="d-flex flex-wrap gap-3 mb-4">
-                    <a href="{% url 'project_list' %}" class="btn btn-primary">Мои проекты</a>
-                    <a href="{% url 'about' %}" class="btn btn-outline-primary">Обо мне</a>
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-6 order-lg-1 order-2">
+                <h1 class="display-5 fw-bold mb-4 text-dark">Разработка программного обеспечения</h1>
+                <p class="lead text-muted mb-5">Создаём современные API, оптимизируем существующие системы, разрабатываем бэкенд-сервисы для вашего бизнеса</p>
+                
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'contact' %}" class="btn btn-dark btn-lg px-4 py-3">
+                        Обсудить проект
+                    </a>
+                    
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Skills Preview -->
-<div class="content-section bg-light">
-    <div class="container">
-        <h2 class="mb-4">Ключевые технологии</h2>
-        <div class="d-flex flex-wrap gap-2">
-            {% for skill in skills|slice:":12" %}
-            <span class="badge bg-white text-dark border py-2 px-3">{{ skill.name }}</span>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<!-- Projects -->
-<div class="content-section bg-white">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Проекты</h2>
-            <a href="{% url 'project_list' %}" class="btn btn-outline-primary">Все проекты</a>
-        </div>
-        
-        <div class="row g-4">
-            {% for project in featured_projects %}
-            <div class="col-lg-4 col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3">{{ project.title }}</h5>
-                        <p class="text-muted mb-3">{{ project.description|truncatewords:25 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary">{{ project.get_project_type_display }}</span>
-                            <a href="{% url 'project_detail' project.pk %}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+            
+            <div class="col-lg-6 order-lg-2 order-1">
+                <div class="bg-light rounded-3 p-4 p-md-5">
+                    <h4 class="mb-4 text-dark">Что решаем</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3">
+                                <div class="text-dark mb-2 fw-medium">API не масштабируется</div>
+                                <div class="text-muted small">Оптимизируем запросы, добавляем кэширование</div>
+                            </div>
+                            <div class="p-3">
+                                <div class="text-dark mb-2 fw-medium">Медленная работа с БД</div>
+                                <div class="text-muted small">Убираем N+1, настраиваем индексы</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3">
+                                <div class="text-dark mb-2 fw-medium">Нужен бэкенд с нуля</div>
+                                <div class="text-muted small">Разрабатываем за 4-8 недель</div>
+                            </div>
+                            <div class="p-3">
+                                <div class="text-dark mb-2 fw-medium">Требуется интеграция</div>
+                                <div class="text-muted small">Подключаем платежки, сервисы, вебхуки</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </div>
+
+
+
+
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.section-py {
+    padding: 5rem 0;
+}
+
+.section-py-sm {
+    padding: 3rem 0;
+}
+
+/* Минималистичные стили */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-dark {
+    background-color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.btn-dark:hover {
+    background-color: #000;
+    border-color: #000;
+}
+
+.btn-outline-dark {
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.btn-outline-dark:hover {
+    background-color: #1a1a1a;
+    border-color: #1a1a1a;
+    color: white;
+}
+
+.accordion-button {
+    background-color: white;
+    color: #1a1a1a;
+    font-weight: 500;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: white;
+    color: #1a1a1a;
+    box-shadow: none;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+}
+
+.border {
+    border-color: #eaeaea !important;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .section-py {
+        padding: 3rem 0;
+    }
+    
+    .display-5 {
+        font-size: 2rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-py {
+        padding: 2rem 0;
+    }
+    
+    .display-5 {
+        font-size: 1.75rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Плавная прокрутка
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

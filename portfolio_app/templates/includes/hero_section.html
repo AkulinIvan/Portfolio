@@ -1,0 +1,29 @@
+<div class="hero-section" style="background: linear-gradient(135deg, #0d2b23 0%, #1c4539 100%); padding: 80px 0; color: white;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto text-center">
+                {% if icon %}  <!-- Проверяем, передана ли переменная icon -->
+                <div class="mb-4">
+                    <i class="{{ icon }}" style="font-size: 3rem;"></i>  <!-- Используем переменную -->
+                </div>
+                {% endif %}
+                
+                {% if title %}  <!-- Проверяем, передана ли переменная title -->
+                <h1 class="mb-3">{{ title }}</h1>  <!-- Используем переменную -->
+                {% endif %}
+                
+                {% if subtitle %}  <!-- Проверяем, передана ли переменная subtitle -->
+                <p class="lead mb-4" style="max-width: 700px; margin: 0 auto;">
+                    {{ subtitle }}  <!-- Используем переменную -->
+                </p>
+                {% endif %}
+                
+                {% if extra_content %}  <!-- Дополнительная переменная -->
+                <div class="mt-4">
+                    {{ extra_content|safe }}  <!-- |safe если содержит HTML -->
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

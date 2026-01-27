@@ -1,0 +1,31 @@
+<div class="card-taiga bg-transparent">
+    <div class="card-body py-5">
+        {% if icon %}
+        <i class="{{ icon }} display-1 text-gradient mb-4"></i>
+        {% endif %}
+        
+        <h3 class="mb-3">{{ title }}</h3>
+        
+        {% if subtitle %}
+        <p class="lead mb-4" style="max-width: 600px; margin: 0 auto;">
+            {{ subtitle }}
+        </p>
+        {% endif %}
+        
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            {% if button1_url %}
+            <a href="{% url button1_url %}" class="btn btn-outline-primary">
+                {% if button1_icon %}<i class="{{ button1_icon }} me-2"></i>{% endif %}
+                {{ button1_text }}
+            </a>
+            {% endif %}
+            
+            {% if button2_url %}
+            <a href="{% url button2_url %}" class="btn btn-taiga">
+                {% if button2_icon %}<i class="{{ button2_icon }} me-2"></i>{% endif %}
+                {{ button2_text }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
