@@ -223,7 +223,7 @@ class ContactView(FormView):
 Я получил вашу заявку и свяжусь с вами в ближайшее время (обычно в течение 4-8 рабочих часов).
 
 С уважением,
-NODIS TECH""",
+ACTIOS TECH""",
                 settings.DEFAULT_FROM_EMAIL,
                 [email],
                 fail_silently=True,
